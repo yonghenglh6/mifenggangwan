@@ -1,0 +1,156 @@
+<!-- $Id: article_list.htm 16783 2009-11-09 09:59:06Z liuhui $ -->
+<div id="bg" class="bg" style="display:none;"></div>
+{if $inorout == 'out'}
+{include file="store_move_out_notice.htm"}
+{else}
+{include file="store_move_in_notice.htm"}
+{/if}
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<script type="text/javascript" src="../js/calendar.php?lang={$cfg_lang}"></script>
+<link href="../js/calendar/calendar.css" rel="stylesheet" type="text/css" />
+
+{include file="store_move_search.htm"}
+
+<form method="POST" action="store_inout_list.php?act=batch_remove" name="listForm">
+<!-- start cat list -->
+<div class="list-div" id="listDiv">
+{/if}
+<table cellspacing='1' cellpadding='3' id='list-table'>
+<tr><td><a href="store_move.php?act={$smarty.get.act}&io=out">转拨出库记录</a></td><td><a href="store_move.php?act={$smarty.get.act}&io=in">转拨入库记录</a></td></tr>
+</table>
+<table cellspacing='1' cellpadding='3' id='list-table'>
+  <tr>
+    <th>{$lang.rec_id}</th>
+    <th>{$lang.store_out_name}</th>
+    <th>{$lang.store_in_name}</th>
+	<th>{$lang.store_out_user}</th>
+    <th>{$lang.store_in_user}</th>
+    <th>{$lang.store_number}</th>
+	<th>{$lang.store_add_time}</th>
+    <th>{$lang.store_out_time}</th>
+	<th>{$lang.store_in_time}</th>
+	<th>{$lang.store_status}</th>
+    <th>{$lang.handler}</th>
+  </tr>
+  {foreach from=$info item=move key=key}
+  <tr align='center' id='del{$move.move_id}'>
+  <td>{$move.move_id}</td>
+  <td align="left">{$move.out_store_name}</td>
+  <td align="left">{$move.in_store_name}</td>
+  <td>{$move.out_store_user}</td>
+  <td>{$move.in_store_user}</td>
+  <td>{$move.number}</td>
+  <td>{$move.addtime}</td>
+  <td>{$move.outtime}</td>
+  <td>{$move.intime}</td>
+  <td>{$move.status_info}</td>
+  <td>
+  {foreach from=$move.doing item=do key=k}
+  <a href="{$do.url}">{$do.name}</a>&nbsp;&nbsp;
+  {/foreach}
+  </td>
+  </tr>
+  {foreachelse}
+  <tr>
+  <td colspan='11' align='center'>没有转拨记录</td>
+  </tr>
+  {/foreach}
+
+  <tr>&nbsp;
+    <td align="right" nowrap="true" colspan="20">{include file="page.htm"}</td>
+  </tr>
+</table>
+{if $full_page}
+</div>
+
+
+</form>
+<!-- end cat list -->
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+	/**
+   * @param: bool ext 其他条件：用于转移分类
+   */
+  function confirmSubmit(frm, ext)
+  {
+      if (frm.elements['type'].value == 'button_remove')
+      {
+          return confirm(drop_confirm);
+      }
+      else if (frm.elements['type'].value == 'not_on_sale')
+      {
+          return confirm(batch_no_on_sale);
+      }
+      else if (frm.elements['type'].value == 'move_to')
+      {
+          ext = (ext == undefined) ? true : ext;
+          return ext && frm.elements['target_cat'].value != 0;
+      }
+      else if (frm.elements['type'].value == '')
+      {
+          return false;
+      }
+      else
+      {
+          return true;
+      }
+  }
+	 function changeAction()
+  {
+		
+      var frm = document.forms['listForm'];
+
+      // 切换分类列表的显示
+      frm.elements['target_cat'].style.display = frm.elements['type'].value == 'move_to' ? '' : 'none';
+
+      if (!document.getElementById('btnSubmit').disabled &&
+          confirmSubmit(frm, false))
+      {
+          frm.submit();
+      }
+  }
+
+ /* 搜索入库单 */
+ function searchStock()
+ {    
+    listTable.filter.store_id_out = parseInt(document.forms['searchForm'].elements['store_id_out'].value);
+	listTable.filter.store_id_in = parseInt(document.forms['searchForm'].elements['store_id_in'].value);
+	listTable.filter.add_time1 = Utils.trim(document.forms['searchForm'].elements['add_time1'].value);
+	listTable.filter.add_time2 = Utils.trim(document.forms['searchForm'].elements['add_time2'].value);
+	listTable.filter.status = Utils.trim(document.forms['searchForm'].elements['status'].value);
+    listTable.filter.page = 1;
+    listTable.loadList();
+ }
+ /*删除转拨单*/
+ function del(move_id){
+	 if(confirm('删除后，不可找回，请谨慎!')){
+		 Ajax.call('store_move.php?act=del&ajax=1', "move_id="+ move_id, return_del, "GET", "JSON");
+	 }
+ }
+ function return_del(result){
+	 if(result.error <= 0){
+		 alert(result.message);
+	 }else{
+		 document.getElementById('del'+result.error).style.display = 'none';
+	 }
+ }
+ {/literal}
+</script>
+
+
+{include file="pagefooter.htm"}
+{/if}

@@ -1,0 +1,57 @@
+<!-- $Id: brand_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+<div class="main-div">
+<form method="post" action="store_inout_type.php" name="theForm"  onsubmit="return validate()">
+<table cellspacing="1" cellpadding="3" width="100%">
+  <tr>
+    <td class="label">{if $smarty.request.in_out eq 1}{$lang.type_name1}{else}{$lang.type_name2}{/if}</td>
+    <td><input type="text" name="type_name" maxlength="60" value="{$type.type_name}" />{$lang.require_field}</td>
+  </tr>
+
+  <tr>
+    <td class="label">{$lang.is_valid}</td>
+    <td><input type="radio" name="is_valid" value="1" {if $type.is_valid eq 1}checked="checked"{/if} /> {$lang.yes}
+        <input type="radio" name="is_valid" value="0" {if $type.is_valid eq 0}checked="checked"{/if} /> {$lang.no}
+        
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><br />
+      <input type="submit" class="button" value="{$lang.button_submit}" />
+      <input type="reset" class="button" value="{$lang.button_reset}" />
+      <input type="hidden" name="act" value="{$form_action}" />
+      <input type="hidden" name="old_typename" value="{$type.type_name}" />
+      <input type="hidden" name="id" value="{$type.type_id}" />
+	  <input type="hidden" name="in_out" value="{$in_out}" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+document.forms['theForm'].elements['type_name'].focus();
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+	{if $smarty.request.in_out eq 1}
+    validator.required("type_name",  no_typename1);
+	{else}
+	validator.required("type_name",  no_typename2);
+	{/if}
+    return validator.passed();
+}
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

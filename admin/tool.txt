@@ -1,0 +1,4 @@
+function showInAlert($msg){
+	//echo('qq');
+	echo('<script type=\'text/javascript\'>alert("'.$msg.'");</script>');
+}

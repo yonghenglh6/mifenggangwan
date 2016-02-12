@@ -1,0 +1,94 @@
+<script type="text/javascript">
+function showDiv(rec_id, inout_status, action_val)
+{
+document.getElementById('popDiv').style.display='block';
+document.getElementById('bg').style.display='block';
+var form_inout_check = document.forms['inout_check'];
+//form_inout_check.elements['action_val'].value = action_val;
+//form_inout_check.elements['inout_status'].value = inout_status;
+//form_inout_check.elements['rec_id'].value = rec_id;
+}
+
+function closeDiv(){
+document.getElementById('popDiv').style.display='none';
+document.getElementById('bg').style.display='none';
+var sels = document.getElementsByTagName('select'); 
+ for (var i = 0; i < sels.length; i++) 
+    {
+		sels[i].style.visibility = '';     
+
+    }
+}
+</script>
+<div id="popDiv" class="mydiv" style="display:none;">
+
+<div class="qb_left">&nbsp;&nbsp;运费模板选择</div><div class="qb_right" ><a href="javascript:closeDiv()" >关 闭</a>&nbsp;&nbsp;&nbsp;</div>
+<div style="clear:both;"></div>
+<div class="blank15"></div>
+<form  method="post" name="demoForm" id="demoForm" action="store_manage.php" onsubmit="return CheckDemoList();" > 
+<table cellpadding=1 cellspacing=1 width="90%" border=0 bgcolor=#dddddd class="demoTab">  
+    <tr bgcolor="#eeeeee"> 
+      <td width="10%"><input type="checkbox" onclick='listTable.selectAll(this, "checkboxes")'> 编号</td> 
+      <!-- <td width="20%"> 运费模板名称</td> --> 
+	   <td width="15%"> 物流名称</td>
+	  <!-- <td width="15%"> 计费方式</td> -->
+	  <td width="40%"> 计费说明</td>
+    </tr>   
+	{foreach from=$demo_list item=demo}
+    <tr bgcolor=#ffffff> 
+	 <td ><input type="checkbox" name="checkboxes[]" value="{$demo.demo_id}" />{$demo.demo_id}</td> 
+     <!-- <td > {$demo.demo_name}</td>  -->
+	 <td > {$demo.shipping_name}</td>
+	 <!-- <td > {$demo.compute_mode_name}</td> -->
+	 <td > {$demo.fee_desc}</td>
+    </tr> 
+	{/foreach}
+	</table> 
+     <div class="blank15"></div>
+	  <input type="hidden" value="shipping_area_fee_batch" name="act" >
+	  <input type="hidden" value="{$shipping_region_id|default:0}" name="shipping_region_id" >
+      <input type="submit" class="botton" value="确定" > 
+</form> 
+</div>
+
+<script type="text/javascript" >
+function CheckDemoList()
+{
+	var err = true; 
+	/*var demofrm=document.forms['demoForm'];
+	var checkboxes=demofrm.elements['checkboxes[]'];
+	for(var k=0;k<checkboxes.length;k++)
+	{
+		if (checkboxes[k].checked)
+		{
+			err=false;
+		}	
+	}*/
+	$("input[name='checkboxes[]']").each(function(){
+		if(this.checked){
+			err = false;
+		}
+	});
+	if (err)
+	{
+			alert('您一个都没选择');
+	}
+
+	if(document.getElementById('areaform')){
+		var str = '';
+		$('.areacb').each(function(){
+			if(this.checked){
+				str+=this.value+',';
+			}
+		})
+		if(str == ''){
+			err = true;
+			alert('请为运费模板选择区域地址!');
+		}else{
+			$("input[name='act']").val('shipping_area_fee_batch_new');
+			$("input[name='shipping_region_id']").val(str);
+		}
+	}
+	return !err;
+}
+</script>

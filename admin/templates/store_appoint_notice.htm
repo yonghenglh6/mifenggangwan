@@ -1,0 +1,159 @@
+<style type="text/css">
+/*弹出层的STYLE*/
+body {height:100%;}
+.mydiv {
+background:#ffffff;
+text-align: center;
+line-height: 40px;
+font-size: 12px;
+font-weight: bold;
+z-index:10000001;
+width: 650px;
+height: auto;
+left:50%;/*FF IE7*/
+top: 50%;/*FF IE7*/
+margin-left:-325px!important;/*FF IE7 该值为本身宽的一半 150 *2 =300 */
+margin-top:-200px!important;/*FF IE7 该值为本身高的一半 60*2=120 */
+margin-top:0px;
+position:fixed!important;/*FF IE7*/
+position:absolute;/*IE6*/
+_top:       expression(eval(document.compatMode &&
+            document.compatMode=='CSS1Compat') ?
+            documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2);/*IE5 IE5.5*/
+
+}
+ .blank15{height:15px; line-height:8px; clear:both; visibility:hidden;}
+.mydiv table{margin:0 auto;padding:0 auto;}
+.mydiv tr{padding:0;margin:0;}
+.mydiv td{height:10px;font-size:14px;font-weight:normal;padding:0;margin:0;}
+
+.bg {
+background-color: #a6a6a6;
+width: 100%;
+height: 100%;
+left:0;
+top:0;/*FF IE7*/
+filter:alpha(opacity=70);/*IE*/
+opacity:0.7;/*FF*/
+z-index:10000000;
+position:fixed!important;/*FF IE7*/
+position:absolute;/*IE6*/
+_top:       expression(eval(document.compatMode &&
+            document.compatMode=='CSS1Compat') ?
+            documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2);/*IE5 IE5.5*/
+
+}
+.qb_left{float:left;width:80%;text-align:left;color:#fff;font-size:15px;}
+.qb_right{float:right;width:20%;background:#f4f4f4;height:40px;line-height:40px;text-align:right;border-bottom:1px solid #eee;}
+.qb_right a{text-decoration:none;color:#ff5a00;}
+/*The END*/
+
+</style>
+<script type="text/javascript">
+function showDiv(frmname)
+{
+	var frm = document.forms[frmname];
+	var val = Array();
+	for (i = 0; i < frm.elements.length; i ++ )
+    {
+		if (frm.elements[i].name == 'checkboxes' && frm.elements[i].checked)
+		{
+			val.push(frm.elements[i].value);
+		}
+	}
+	if(val.length > 0){
+		document.getElementById('ordersn').value = val;
+		document.getElementById('popDiv').style.display='block';
+	}else{
+		alert('请选择要指定仓库的订单!');
+	}
+}
+
+function closeDiv(){
+	document.getElementById('popDiv').style.display='none';
+	var sels = document.getElementsByTagName('select'); 
+	for (var i = 0; i < sels.length; i++) 
+	{
+		sels[i].style.visibility = '';
+	}
+}
+</script>
+
+
+<div id="popDiv" class="mydiv" style="border:1px solid #bbb;display:none;">
+
+<div class="qb_left" style="height:40px;line-height:40px;background:#f4f4f4;color:#000;font-size:16px;font-weight:bold;border-bottom:1px solid #eee;">&nbsp;&nbsp;订单指库</div><div class="qb_right" ><a href="javascript:closeDiv()" >关 闭</a>&nbsp;&nbsp;&nbsp;</div>
+<div style="clear:both;"></div>
+<form  method="post" name="pricecut_notice" name="inout_check" id="inout_check" action="order.php" onsubmit="return check_appoint();"> 
+<table cellpadding=0 cellspacing=0 width="90%" border=0>  
+    <tr><td colspan=2 height=30>&nbsp;</td></tr>
+    <tr> 
+      <td valign="top" align="right">指派至：</td> 
+      <td  align="left">
+	  <select name='stock_id' id='stock_id' onchange="getSubStore(this,'sub_id')">
+		<option value="0">选择仓库</option>
+		{foreach from=$store_list item=big key=k}
+		<option value="{$big.store_id}">{$big.store_name}</option>
+		{/foreach}
+	  </select>
+	  <select name='sub_id' id='sub_id'>
+		<option value="0">选择库房</option>
+	  </select>
+	  </td> 
+    </tr>   
+    <tr> 
+    <td></td>
+      <td  align=left  style="padding:20px 0;"> 
+	  <input type="hidden" value="appoint" id="appoint" name="act" id="act">
+	  <input type='hidden' value='' name='ordersn' id='ordersn'>
+      <input type="submit"  value="确定" ><span style="color:red">被指库的订单所在的仓库不能和你选择的仓库相同！</span>
+      </td>  
+    </tr> 
+</table> 
+
+</form> 
+</div>
+<script>
+//仓库 库房两级下拉联动
+function getSubStore(obj, target)
+{
+	var parentid = obj.options[obj.selectedIndex].value;
+	Ajax.call('store_ajax.php?sjs='+Math.random(), "target="+ target+"&parentid=" + parentid , getSubStore_morecity_response, "GET", "JSON");
+}
+function getSubStore_morecity_response(result)
+{
+	var sel = document.getElementById(result.target);
+	sel.length = 1;
+	sel.selectedIndex = 0;
+	if (result.store_list)
+	{
+		for (i = 0; i < result.store_list.length; i ++ )
+		{
+			var opt = document.createElement("OPTION");
+			opt.value = result.store_list[i].store_id;
+			opt.text  = result.store_list[i].store_name;
+			sel.options.add(opt);
+		}
+	}
+}
+function check_appoint(){
+	var stock_id = document.getElementById('stock_id').value;
+	var sub_id = document.getElementById('sub_id').value;
+	var appoint = document.getElementById('appoint').value;
+	if(stock_id == 0){
+		alert('请选择指派的仓库！');
+		return false;
+	}
+	if(sub_id == 0){
+		alert('请选择指派有库房!');
+		return false;
+	}
+	if(appoint == ''){
+		alert('请先选择要指派仓库的订单');
+		return false;
+	}
+	return true;
+}
+</script>

@@ -1,0 +1,109 @@
+<!-- $Id: area_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+{if $parent_id eq 0}
+<div class="form-div">
+<form method="post" action="store_manage.php" name="soForm" >
+{$lang.label_search}
+<input type="text" name="keyword" maxlength="150" size="40" value="{$smarty.request.keyword}" />
+<input type="hidden" name="act" value="list" />
+<input type="submit" value="{$lang.button_search}" class="button" />
+</form>
+</div>
+{/if}
+
+<div class="form-div">
+<form method="post" action="store_manage.php" name="theForm" onsubmit="return add_store()">
+{if $parent_id}{$lang.add_store_sub}{else}{$lang.add_store_main}{/if}
+<input type="text" name="store_name" maxlength="150" size="40" />
+<input type="hidden" name="parent_id" value="{$parent_id}" />
+<input type="submit" value="{$lang.button_submit}" class="button" />
+</form>
+</div>
+
+<!-- start category list -->
+<div class="list-div">
+<table cellspacing='1' cellpadding='3' id='listTable'>
+  <tr>
+    <th>{$lang.store_main_list}</th>
+  </tr>
+</table>
+</div>
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellspacing='1' cellpadding='0' id='listTable'>
+  <tr>
+    {foreach from=$store_arr item=list name=store_name}
+      {if $smarty.foreach.store_name.iteration > 1 and ($smarty.foreach.store_name.iteration-1) % 2 eq 0}
+      </tr><tr>
+      {/if}
+      <td class="first-cell" align="left">
+	  <table width="100%" cellpadding=0 cellspacing=0 border=0>
+	  <tr><td width="22%" align=right style="font-weight:bold;">
+       <span onclick="listTable.edit(this, 'edit_store_name', '{$list.store_id}'); return false;">{$list.store_name|escape:"html"}</span>
+	   </td><td width="78%">
+       <span class="link-span">
+       <a href="store_manage.php?act=shipping_area&id={$list.store_id}" title="{$lang.manage_area}">{$lang.manage_area}</a>&nbsp;&nbsp;
+	   <a href="store_manage.php?act=list_sub&pid={$list.store_id}" title="{$lang.manage_sub}">{$lang.manage_sub}</a>&nbsp;&nbsp;
+	   <a href="store_manage.php?act=store_set_adminer&id={$list.store_id}" title="{$lang.manage_zhuguan}">{$lang.manage_zhuguan}</a>&nbsp;&nbsp;
+
+	   <a href="store_manage.php?act=store_set_info&id={$list.store_id}" title="{$lang.view_store}">{$lang.view_store}</a>&nbsp;&nbsp;
+
+	   <a href="store_manage.php?act=store_set_rebate&id={$list.store_id}" title="{$lang.manage_rebate}">{$lang.manage_rebate}</a>&nbsp;&nbsp;
+	   <a href="store_manage.php?act=store_view_rebate&id={$list.store_id}" title="{$lang.view_rebate}">{$lang.view_rebate}</a>&nbsp;&nbsp;
+       <a href="store_manage.php?act=store_remove&id={$list.store_id}" onclick="return confirm('确认要删除吗')"  title="{$lang.drop}">{$lang.drop}</a>
+       </span>
+	   </td></tr></table>
+      </td>
+      {if $smarty.foreach.store_name.last}
+       {if $smarty.foreach.store_name.total % 2 eq 1}
+        <td>&nbsp;</td>
+       {/if}
+      {/if}
+    {/foreach}
+  </tr>
+</table>
+
+{if $full_page}
+</div>
+
+{literal}
+<script language="JavaScript">
+<!--
+
+onload = function() {
+  // 开始检查订单
+  startCheckOrder();
+}
+
+/**
+ * 新建区域
+ */
+function add_store()
+{
+    var store_name = Utils.trim(document.forms['theForm'].elements['store_name'].value);
+    var parent_id   = Utils.trim(document.forms['theForm'].elements['parent_id'].value);
+
+    if (store_name.length == 0)
+    {
+        alert(store_name_empty);
+    }
+    else
+    {
+      Ajax.call('store_manage.php?is_ajax=1&act=add_store',
+        'parent_id=' + parent_id + '&store_name=' + store_name,
+        listTable.listCallback, 'POST', 'JSON');
+    }
+
+    return false;
+}
+
+//-->
+</script>
+{/literal}
+
+{include file="pagefooter.htm"}
+{/if}

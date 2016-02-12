@@ -1,0 +1,73 @@
+<!-- $Id: brand_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="../js/region.js"}
+<div class="main-div">
+<form method="post" action="store_manage.php" name="theForm"  onsubmit="return validate()">
+<table cellspacing="1" cellpadding="3" width="100%">
+  <tr>
+    <td class="label">{$lang.store_jwd}</td>
+    <td><input type="text" name="latlog" maxlength="60" value="{$store.latlog}" />{$lang.require_field}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.sub_address}</td>
+    <td>
+	<select name="province" id="selProvinces" onchange="region.changed(this, 2, 'selCities')">
+     <option value=''>{$lang.select_please}</option>
+     {foreach from=$provinces item=region}
+      <option value="{$region.region_id}" {if $region.region_id eq $store.province}selected{/if}>{$region.region_name}</option>
+     {/foreach}
+    </select>
+	<select name="city" id="selCities" onchange="region.changed(this, 3, 'selDistricts')">
+    <option value=''>{$lang.select_please}</option>
+     {foreach from=$cities item=region}
+     <option value="{$region.region_id}" {if $region.region_id eq $store.city}selected{/if}>{$region.region_name}</option>
+     {/foreach}
+     </select>
+	 <select name="district" id="selDistricts">
+          <option value="">{$lang.select_please}</option>
+			 {foreach from=$district item=region}
+			<option value="{$region.region_id}" {if $region.region_id eq $store.district}selected{/if}>{$region.region_name}</option>
+			 {/foreach}
+        </select>{$lang.require_field}
+	</td>
+  </tr>
+  <tr>
+    <td class="label">&nbsp;</td>
+    <td>
+      <input type="submit" class="button" value="{$lang.button_submit}" />
+      <input type="reset" class="button" value="{$lang.button_reset}" />
+      <input type="hidden" name="act" value="{$form_action}" />
+      <input type="hidden" name="store_id" value="{$store.store_id}" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+region.isAdmin = true;
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("latlog",  no_jwd);
+	validator.required("province",  no_province);
+	validator.required("city",  no_city);
+	validator.required("district",  '没有选择区（县）');
+	
+    return validator.passed();
+}
+
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

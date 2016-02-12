@@ -1,0 +1,231 @@
+<!-- $Id: brand_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+
+<div id="bg" class="bg" style="display:none;"></div>
+{include file="store_move_view_notice.htm"}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/region.js"}
+<div class="list-div" id="listDiv">
+  <form method="post" action="store_inout_out.php" name="theForm"  onsubmit="return validate()">
+    <table cellspacing='1' cellpadding='3' >
+      <tr>
+        <th align=center>出库号(转拨)</th>
+        <th align=center>发货仓库</th>
+        <th align=center>收货仓库</th>
+        <th align=center>发货仓管</th>
+        <th align=center>发货日期</th>
+        <th align=center>状态</th>
+        {if $smarty.get.act eq 'check'}
+        <th align=center>操作</th>
+        {/if} 
+      </tr>
+      <tr>
+        <td align=center>{$inout.inout_sn}</td>
+        <td align=center>{$inout.out_store_name}</td>
+        <td align=center>{$inout.in_store_name}</td>
+        <td align=center>{$inout.out_store_user}</td>
+        <td align=center>{$inout.outtime}</td>
+        <td align=center>{$inout.status_info}</td>
+        {if $smarty.get.act eq 'check'}
+        <td  align=center ><a href="javascript:showDiv({$inout.move_id}, {$three}, '转拨入库单通过备注', 'check_move_in');" >通过审核</a>&nbsp;&nbsp; <a href="javascript:showDiv({$inout.move_id}, {$four}, '转拨入库拒绝', 'check_move_no');" >拒绝</a>&nbsp;&nbsp; </td>
+        {/if} </tr>
+    </table>
+    <div class="blank"></div>
+    <table cellspacing='1' cellpadding='3' id="product_box" class="product_box">
+      <tr id="firstTr">
+        <th width="10%" align=center>序号</th>
+        <th width="15%" align=center>产品图片</th>
+        <th width="15%" align=center>产品货号</th>
+        <th width="15%" align=center>产品名称</th>
+        <th width="15%" align=center>产品属性</th>
+        <th width="10%" align=center>应发数量</th>
+        <th width="10%" align=center>实发数量</th>
+      </tr>
+      {if $goodsinfo}
+      {foreach from=$goodsinfo item=goods key=key}
+      <tr>
+        <td align=center>{$key}</td>
+        <td align=center><img width="50" height="50" src="{$goods.goods_thumb}">
+          <input type="hidden" value="{$goods.goods_id}" name="goods_id[]"></td>
+        <td align=center>{$goods.goods_sn}
+          <input type="hidden" value="{$goods.goods_sn}" name="goods_sn[]"></td>
+        <td>{$goods.goods_name} </td>
+        <td align=center>{$goods.goods_attr1}
+          <input type="hidden" value="{$goods.goods_attr2}" name="goods_attr[]"></td>
+        <td align=center>{$goods.number_shishou}
+          <input type="hidden" value="{$goods.number_shishou}" name="number_yingshou[]"></td>
+        <td align=center>{$goods.number_shishou}
+          <input type="hidden" value="{$goods.number_shishou}" name="number_shishou[]"></td>
+      </tr>
+      {/foreach}
+      {/if}
+    </table>
+    {if $notlist}
+    <div class="blank"></div>
+    <table cellspacing='1' cellpadding='3' class="note_box">
+    <tr style="background:#eee;">
+      <th width="15%" align=center>操作者</th>
+      <th width="15%" align=center>操作时间</th>
+      <th width="15%" align=center>操作</th>
+      <th width="40%" align=center>备注</th>
+    </tr>
+    {foreach from=$notlist item=note key=k}
+    <tr>
+      <td align=center>{$note.adduser}</td>
+      <td align=center>{$note.addtime}</td>
+      <td align=center>{$note.action_val}</td>
+      <td >{$note.inout_note}</td>
+    </tr>
+    {/foreach}
+    <table>
+    {/if}
+    <div class="blank"></div>
+    <table cellspacing='0' cellpadding='0'>
+      <tr>
+        <td align="center">
+          <input type="hidden" name="act" value="{$form_action}" />
+          <input type="hidden" name="store_id" value="{$store.store_id}" />
+          <input type="hidden" name="parent_id" value="{$store.parent_id}" /></td>
+      </tr>
+    </table>
+  </form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal} 
+<script language="JavaScript">
+<!--
+region.isAdmin = true;
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("order_sn",  no_subname);
+	validator.required("province",  no_province);
+	validator.required("city",  no_city);
+	var admin_list= document.getElementsByName('admin_id[]');
+	var admin_checked=0;
+	for(var k=0;k<admin_list.length;k++)
+	{
+		if (admin_list[k].checked)
+		{
+			admin_checked++;
+		}		
+	}
+	if(!admin_checked)
+	{
+		validator.addErrorMsg(no_admin);
+	}
+    return validator.passed();
+}
+
+  function addAdminTel(obj)
+  {
+	  var tbl  = document.getElementById('tabzhyh');
+	  if (obj.checked)
+	  {
+		  //alert(obj.value);
+		  //alert(obj.nextSibling.nodeValue);		   
+           var row  = tbl.insertRow();
+		   row.setAttribute("id", obj.value);
+           var cell1 = row.insertCell(-1);
+		   cell1.innerHTML= obj.nextSibling.nodeValue+"&nbsp;<input type='hidden' name='adminname_"+ obj.value +"' value='"+ obj.nextSibling.nodeValue +"' ><input type='text' name='mobile_"+ obj.value +"'>&nbsp;<input type='text' name='tel_"+ obj.value +"'>";
+	  }
+	  else
+	  {
+			var ok= tbl.getElementsByTagName("tr");
+			for(var k=0;k<ok.length;k++)
+			{
+                if(ok[k].id==obj.value)
+				{
+					tbl.deleteRow(k);
+					//k=k-1;
+				}
+			}
+	  }
+	  
+  }
+  
+   //通过order_sn获得商品列表
+   function add_product(obj)
+   {
+      var tbl  = document.getElementById('product_box');
+	  firstTr= document.getElementById('firstTr');
+	  var idx   = rowindex(firstTr);
+	  var row  = tbl.insertRow(idx+1);
+      var cell1 = row.insertCell();
+	  cell1.innerHTML= "44";
+	  var cell1 = row.insertCell(-1);
+	  cell1.innerHTML= "44";
+	  var cell1 = row.insertCell(-1);
+	  cell1.innerHTML= "44";
+	  var cell1 = row.insertCell(-1);
+	  cell1.innerHTML= "44";
+	  var cell1 = row.insertCell(-1);
+	  cell1.innerHTML= "44";
+	  var cell1 = row.insertCell(-1);
+	  cell1.innerHTML= "44";
+	  var cell1 = row.insertCell(-1);
+	  cell1.innerHTML= "44";
+	  var cell1 = row.insertCell(-1);
+	  cell1.innerHTML= "44";
+   }
+
+
+  //通过goods_sn 货号获得商品信息
+  function get_goodsInfo_bysn(obj)
+  {	   
+	  var sn=obj.value;
+	  if(sn)
+	  {
+		Ajax.call('store_inout_in.php?act=get_goodsInfo_bysn&sjs='+Math.random(), "goods_sn="+ sn , get_goodsInfo_bysn_response, "GET", "JSON");
+	  }
+  }
+  function get_goodsInfo_bysn_response(result)
+  {
+	  if (result.cuowu)
+	  {
+		  //alert(result.cuowu);
+		  document.getElementById('goods_name').value= '';
+		  document.getElementById('attr_box').innerHTML= '';
+	  }
+	  else
+	  {
+		document.getElementById('goods_name').value= result.goods_name;
+		document.getElementById('attr_box').innerHTML= result.optionss;
+	  }
+  }
+
+  //仓库 库房两级下拉联动
+  function getSubStore_ecshop120(obj, target)
+  {
+		var parentid = obj.options[obj.selectedIndex].value;
+		Ajax.call('store_ajax.php?sjs='+Math.random(), "target="+ target+"&parentid=" + parentid , getSubStore_ecshop120_response, "GET", "JSON");
+  }
+  function getSubStore_ecshop120_response(result)
+  {
+		var sel = document.getElementById(result.target);
+		sel.length = 1;
+		sel.selectedIndex = 0;
+		if (result.store_list)
+		{
+			for (i = 0; i < result.store_list.length; i ++ )
+			{
+				var opt = document.createElement("OPTION");
+				opt.value = result.store_list[i].store_id;
+				opt.text  = result.store_list[i].store_name;
+				sel.options.add(opt);
+			}
+		}
+  }
+  
+
+//-->
+</script> 
+{/literal}
+{include file="pagefooter.htm"}

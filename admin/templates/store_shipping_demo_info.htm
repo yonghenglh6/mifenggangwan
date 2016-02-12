@@ -1,0 +1,109 @@
+<!-- $Id: brand_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+<div class="main-div">
+<form method="post" action="store_shipping_demo.php" name="theForm"  onsubmit="return validate()">
+<table cellspacing="1" cellpadding="3" width="100%">
+  <tr>
+    <td class="label">{$lang.shipping_select}</td>
+    <td>
+	<select name="shipping_id" size=1>
+	<option value="0">请选择</option>
+	{foreach from=$shipping_list item=shipping}	
+	<option value="{$shipping.shipping_id}" {if $shipping.shipping_id eq $demo.shipping_id}selected=selected{/if} >{$shipping.shipping_name}</option>
+	{/foreach}
+	</select>{$lang.require_field}</td>
+  </tr>
+  <tr>
+  <td class="label">费用：</td>
+    <td><input type="text" name="shipping_fee"  maxlength="60" size="20" value="{$demo.configure.shipping_fee}" /><span class="require-field">*</span></td>
+   </tr>
+   <tr>
+   <td class="label">免费额度:</td>
+  <td><input type="text" name="free_money"  maxlength="60" size="20" value="{$demo.configure.free_money}" /><span class="require-field">*</span></td>
+  </tr>
+  <!-- <tr>
+    <td class="label">{$lang.fee_compute_mode}:</td>
+    <td>
+    <input type="radio"  {if $fee_compute_mode != 'by_number' }checked="true"{/if} onclick="compute_mode('{$shipping_area.shipping_code}','weight')" name="fee_compute_mode" value="by_weight" />{$lang.fee_by_weight}
+    <input type="radio" {if $fee_compute_mode == 'by_number'}checked="true"{/if}  onclick="compute_mode('{$shipping_area.shipping_code}','number')" name="fee_compute_mode" value="by_number" />{$lang.fee_by_number}
+    </td>
+    </tr>
+
+    <tr id="item_fee" style="display:none">
+    <td class="label">单件商品费用：</td>
+    <td><input type="text" name="item_fee"  maxlength="60" size="20" value="{$demo.item_fee}" /><span class="require-field">*</span></td>
+    </tr>
+
+	<tr id="base_fee">
+    <td class="label">1000克以内费用</td>
+    <td><input type="text" name="base_fee"  maxlength="60" size="20" value="{$demo.base_fee}" /><span class="require-field">*</span></td>
+  </tr>
+  <tr id="step_fee">
+    <td class="label">续重每1000克或其零数的费用</td>
+   <td><input type="text" name="step_fee"  maxlength="60" size="20" value="{$demo.step_fee}" /><span class="require-field">*</span></td>
+  </tr>
+
+  <tr id="free_money">
+  <td class="label">免费额度:</td>
+  <td><input type="text" name="free_money"  maxlength="60" size="20" value="{$demo.free_money}" /><span class="require-field">*</span></td>
+  </tr> -->
+
+  <tr>
+    <td colspan="2" align="center"><br />
+      <input type="submit" class="button" value="{$lang.button_submit}" />
+      <input type="reset" class="button" value="{$lang.button_reset}" />
+      <input type="hidden" name="act" value="{$form_action}" />
+      <input type="hidden" name="id" value="{$demo.demo_id}" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+	validator.isNullOption("shipping_id",  no_shipping_id);
+    validator.isNumber("shipping_fee", shipping_fee_number, true);
+	validator.isNumber("free_money", free_money_number, true);
+    return validator.passed();
+}
+
+function compute_mode(shipping_code,mode)
+{
+    var base_fee  = document.getElementById("base_fee");
+    var step_fee  = document.getElementById("step_fee");
+    var item_fee  = document.getElementById("item_fee");
+ 
+
+    if(mode == 'number')
+    {
+      item_fee.style.display = '';
+      base_fee.style.display = 'none';
+      step_fee.style.display = 'none';
+  
+    }
+    else
+    {
+      item_fee.style.display = 'none';
+      base_fee.style.display = '';
+      step_fee.style.display = '';
+   
+    }
+}
+
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

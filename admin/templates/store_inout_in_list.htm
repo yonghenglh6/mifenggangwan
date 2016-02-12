@@ -1,0 +1,216 @@
+<!-- $Id: article_list.htm 16783 2009-11-09 09:59:06Z liuhui $ -->
+<div id="bg" class="bg" style="display:none;"></div>
+{include file="store_inout_notice.htm"}
+
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<script type="text/javascript" src="../js/calendar.php?lang={$cfg_lang}"></script>
+<link href="../js/calendar/calendar.css" rel="stylesheet" type="text/css" />
+<style>
+
+</style>
+<script type="text/javascript">
+ function get_store_sub(obj, pid)
+ {
+	 var store_main=document.getElementById('store_main');
+	 var store_main_list = store_main.getElementsByTagName('a');
+	 for(i=0;i<store_main_list.length;i++)
+	 {
+		store_main_list[i].className='';
+	 }
+	 obj.className='store_curr';
+	//Ajax.call('store_inout_in.php?is_ajax=1&act=search_store_sub', 'parent_id='+pid, get_store_subResponse, 'GET', 'JSON');
+ }
+ function get_store_subResponse(result)
+ {
+	
+ }
+</script>
+<div class="form-div">
+<table cellpadding=1 cellspacing=5 width="100%">
+<tr><td width="80" valign="top">请选择仓库：</td>
+<td id="store_main" align=left >
+<a href="store_inout_in.php?act=list&sid=0" {if $filter.sid eq '0'}class="store_curr"{/if}>全部</a>
+{foreach from=$store_list  item=store}
+<a href="store_inout_in.php?act=list&sid={$store.store_id}" {if $filter.sid eq $store.store_id}class="store_curr"{/if}>{$store.store_name}</a>
+{/foreach}
+</td>
+</tr>
+{if $showck}
+<tr><td width="80" valign="top">请选择库房：</td>
+<td id="store_sub">
+<a href="store_inout_in.php?act=list&sid={$filter.sid}&ssid=0"  {if $filter.ssid eq '0'}class="store_curr"{/if}>全部</a>
+{foreach from=$sub_list item=sub}
+<a href="store_inout_in.php?act=list&sid={$filter.sid}&ssid={$sub.store_id}" {if $filter.ssid eq $sub.store_id}class="store_curr"{/if} >{$sub.store_name}</a>
+{/foreach}
+</td>
+</tr>
+{/if}
+</table>
+</div>
+
+
+<div class="form-div">
+  <form action="javascript:searchList()" name="searchForm" >
+  	<p class="con_top_search">
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+    <select name="inout_status" >
+      <option value="0">入库单状态</option>
+       {foreach from=$lang.inout_status key=status_key item=status_val}
+	   <option value="{$status_key}">{$status_val}</option>
+	   {/foreach}
+    </select>
+	<select name="inout_type" >
+      <option value="0">入库类型</option>
+	  {foreach from=$inout_type_list  item=type_val}
+	   <option value="{$type_val.type_id}">{$type_val.type_name}</option>
+	   {/foreach}
+    </select>
+	入库日期<input type="text" name="add_time1" id="add_time1" class="input_te" readonly="readonly"   /><input name="selbtn1" type="button" id="selbtn1" onclick="return showCalendar('add_time1', '%Y-%m-%d %H:%M', '24', false, 'selbtn1');" value="{$lang.btn_select}" class="button"/>&nbsp;&nbsp;至&nbsp;&nbsp;<input type="text" name="add_time2" id="add_time2" class="input_te" /><input name="selbtn2" type="button" id="selbtn2" onclick="return showCalendar('add_time2', '%Y-%m-%d %H:%M', '24', false, 'selbtn2');" value="{$lang.btn_select}" class="button"/>
+    </p>
+    <p class="con_top_search">
+	入库单号<input type="text" name="inout_sn" id="inout_sn" />
+	交货人<input type="text" name="takegoods_man" id="takegoods_man"  size=15 />
+    <input type="submit" value="{$lang.button_search}" class="button" />
+    </p>
+  </form>
+</div>
+
+<form method="POST" action="store_inout_list.php?act=batch_remove" name="listForm">
+<!-- start cat list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellspacing='1' cellpadding='3' id='list-table'>
+  <tr>
+    <th>{$lang.rec_id}</th>
+    <th>{$lang.inout_sn_in}</th>
+    <th>{$lang.store_name_in}</th>
+	<th>库房仓管</th>
+    <th>{$lang.inout_type_in}</th>
+    <th>{$lang.order_sn}</th>
+	<th>交货人</th>
+    <th>入库日期</th>
+	<th>入库单状态</th>
+    <th>{$lang.handler}</th>
+  </tr>
+  {foreach from=$inout_list item=list}
+  <tr>
+    <td>{$list.rec_id}</td>
+    <td class="first-cell">{$list.inout_sn|escape:html}</td>
+    <td align="center" style="padding:5px;line-height:18px;">{$list.store_name}</td>
+	<td>{$list.admin_name}</td>
+    <td align="center">{$list.inout_type_name}</td>
+    <td align="center">{$list.order_sn}</td>
+    <td align="center">{$list.takegoods_man}</td>
+	<td align="center">{$list.add_time}</td>
+	<td align="center">{$list.inout_status_name}</td>
+    <td align="center" style="padding:5px;line-height:18px;">
+	{if $list.move_id eq 0}
+	   <a href="store_inout_in.php?act=view&id={$list.rec_id}">查看</a>&nbsp;&nbsp;
+	   {if $list.inout_status eq '3'}
+	   <!-- <a href="javascript:showDiv({$list.rec_id}, '3', '审核备注');">审核备注</a>&nbsp;&nbsp; -->
+	   {/if}
+      {if $list.inout_status eq '2'}
+	  <a href="store_inout_in.php?act=check&id={$list.rec_id}">审核</a>&nbsp;&nbsp;
+	  <a href="javascript:showDiv({$list.rec_id}, '3', '审核备注');">快速审核</a>&nbsp;&nbsp;
+	  <a href="javascript:showDiv({$list.rec_id}, '1', '退回');">退回</a>&nbsp;&nbsp;
+	  {/if}
+	  {if $list.inout_status eq '1'}
+	  <a href="store_inout_in.php?act=edit&id={$list.rec_id}">编辑</a>&nbsp;&nbsp;
+	  <a href="store_inout_in.php?act=remove&id={$list.rec_id}" onclick="return confirm('你确认要删除吗？')">删除</a>&nbsp;&nbsp;
+	  {if $list.tjsq}<a href="javascript:showDiv({$list.rec_id}, '2', '提交审核');">提交审核</a>{/if}
+	  {/if}
+	{/if}
+    </td>
+   </tr>
+   {foreachelse}
+    <tr><td class="no-records" colspan="10">{$lang.no_article}</td></tr>
+  {/foreach}
+  <tr>&nbsp;
+    <td align="right" nowrap="true" colspan="20">{include file="page.htm"}</td>
+  </tr>
+</table>
+
+{if $full_page}
+</div>
+
+
+</form>
+<!-- end cat list -->
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+	/**
+   * @param: bool ext 其他条件：用于转移分类
+   */
+  function confirmSubmit(frm, ext)
+  {
+      if (frm.elements['type'].value == 'button_remove')
+      {
+          return confirm(drop_confirm);
+      }
+      else if (frm.elements['type'].value == 'not_on_sale')
+      {
+          return confirm(batch_no_on_sale);
+      }
+      else if (frm.elements['type'].value == 'move_to')
+      {
+          ext = (ext == undefined) ? true : ext;
+          return ext && frm.elements['target_cat'].value != 0;
+      }
+      else if (frm.elements['type'].value == '')
+      {
+          return false;
+      }
+      else
+      {
+          return true;
+      }
+  }
+	 function changeAction()
+  {
+		
+      var frm = document.forms['listForm'];
+
+      // 切换分类列表的显示
+      frm.elements['target_cat'].style.display = frm.elements['type'].value == 'move_to' ? '' : 'none';
+
+      if (!document.getElementById('btnSubmit').disabled &&
+          confirmSubmit(frm, false))
+      {
+          frm.submit();
+      }
+  }
+
+ /* 搜索入库单 */
+ function searchList()
+ {    
+    listTable.filter.inout_status = parseInt(document.forms['searchForm'].elements['inout_status'].value);
+	listTable.filter.inout_type = parseInt(document.forms['searchForm'].elements['inout_type'].value);
+	listTable.filter.add_time1 = Utils.trim(document.forms['searchForm'].elements['add_time1'].value);
+	listTable.filter.add_time2 = Utils.trim(document.forms['searchForm'].elements['add_time2'].value);
+	listTable.filter.inout_sn = Utils.trim(document.forms['searchForm'].elements['inout_sn'].value);
+	listTable.filter.takegoods_man = Utils.trim(document.forms['searchForm'].elements['takegoods_man'].value);
+    listTable.filter.page = 1;
+    listTable.loadList();
+ }
+
+
+
+ {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

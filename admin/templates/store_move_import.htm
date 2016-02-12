@@ -1,0 +1,39 @@
+<!-- $Id: brand_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="../js/region.js"}
+
+<div class="main-div" style="background:#fff;">
+<form method="post" action="store_move.php" enctype="multipart/form-data" name="theForm"  onsubmit="return validate()">
+
+<table width="100%">
+<tr>
+<td width="30%" align=right>请选择文件：</td>
+<td ><input type="file" name="csv_file"></td>
+</tr>
+  <tr><td></td>
+    <td >
+      <input type="submit" class="button" value="批量导入" />
+      <input type="hidden" name="act" value="{$form_action}" />
+      <input type="hidden" name="sub_id_out" value="{$sub_id_out}" />
+      <input type="hidden" name="sub_id_in" value="{$sub_id_in}" />
+	  <input type="hidden" name="move_id" value="{$move_id}" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+region.isAdmin = true;
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}  
+
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

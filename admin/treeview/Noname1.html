@@ -1,0 +1,102 @@
+
+  <link href="css/jquery.treeview.css" rel="stylesheet" type="text/css"/>
+  <link href="css/jquery.ui.css" rel="stylesheet" type="text/css"/>
+  <link href="css/screen.css" rel="stylesheet" type="text/css"/>
+  <script src="js/jquery.js" type="text/javascript"></script>
+  <script src="js/jquery.ui.js" type="text/javascript"></script>	
+  <script src="js/jquery.treeview.js" type="text/javascript"></script>
+  <script language="JavaScript">
+  $(function() {
+	$("#channelsDialog").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 400,
+		height: 700,
+		position: ["center",20],
+		buttons: {
+			"OK": function() {
+				$("#channelsSelector input[name='channelIds']:checked").each(function(){
+					appendChannels(this);
+					$(this).removeAttr("checked");
+				});
+				$(this).dialog("close");
+
+			}
+		}
+	});
+	$('#channelsLink').click(function(){
+		$('#channelsDialog').dialog('open');
+		return false;
+	});
+	$('#channelsSelector').treeview({
+                collapsed:true,			//初始化时的折叠状态。true，初始化为收缩节点状态；false，与前相反。
+                unique:false,			//展开同级节点的唯一性。true，当展开一个节点时，同级的其他节点会自动关闭；false，当展开一个节点时，同级的其他节点保持原形。
+				persist: "location",	//记忆折叠的方式。location：页面刷新不保留折叠状态；cookie：页面刷新保留折叠状态。
+                animated:"slow"		//设置展开子节点时的显示速度，有 slow、normal、fast 几个值
+            });
+
+	$(":checkbox").click(function(){ 
+		checkStatus($(this).val(),this);
+    }); 
+});
+
+function appendChannels(channel) {
+	var hasContain = false;
+	$("input[name=cIds]").each(function() {
+		if($(this).val()==$(channel).val()) {
+			hasContain = true;
+		}
+	});
+	if(hasContain) {
+		return;
+	}
+	var s = "<div style='padding-top:3px'>";
+	s += "<input name='cIds' value='"+$(channel).val()+"'/>";
+	s += "<a href='javascript:void(0);' onclick='$(this).parent().remove();' class='pn-opt'>删除</a>";	
+	s += "</div>";
+	$("#channelsContainer").append(s);
+}
+function checkStatus(no,chkBox){
+  checkPar(chkBox);//当子目录选中时,父目录也选中
+  var chks = document.getElementsByTagName('input');//得到所有input
+      for(var i=0;i <chks.length;i++){
+        if(chks[i].name == 'channelIds'){//得到所名为check的input
+          if(chks[i].className == no){//ID等于传进父目录ID时
+            chks[i].checked = chkBox.checked;//保持选中状态和父目录一致
+            checkStatus(chks[i].value,chks[i]);//递归保持所有的子目录选中
+          }
+        }
+      }
+}
+function checkPar(chkBox) {
+      if(chkBox.name == 'channelIds' && chkBox.checked && chkBox.className != 0) {//判断本单击为选中,并且不是根目录,则选中父目录
+        var chkObject = document.getElementById("ch"+chkBox.className);//得到父目录对象
+        chkObject.checked=true;
+        checkPar(chkObject);
+      }
+    }
+
+  </script>
+
+
+	<input id="channelsLink" type="button" value="打开" />
+	<div id="channelsContainer"></div>
+    <div id="channelsDialog" title="请选择副栏目" style="display:;">
+	<ul id="channelsSelector" class="filetree">
+		
+		<li><input type="checkbox" name="channelIds" value="2" class="0" id="ch2"/>Folder 2
+			<ul>
+				<li><input type="checkbox" name="channelIds" id="ch2.1" class="2" value="2.1"/>Subfolder 2.1
+					<ul>
+						<li><input type="checkbox" name="channelIds" class="2.1" id="ch2.1.1" value="2.1.1"/>File 2.1.1</li>
+						<li><input type="checkbox" name="channelIds" class="2.1" id="ch2.1.2" value="2.1.2"/>File 2.1.2</li>
+					</ul>
+				</li>
+				<li><input type="checkbox" name="channelIds" class="2" id="ch2.2" value="2.2"/>File 2.2</li>
+			</ul>
+		</li>
+		
+		<li><input type="checkbox" name="channelIds" value="4" class="0" id="ch4"/>File 4</li>
+	</ul>
+	</div>
+

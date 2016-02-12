@@ -1,0 +1,204 @@
+<!-- $Id: area_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{if $full_page}
+<div id="bg" class="bg" style="display:none;"></div>
+{include file="store_shipping_demo_lib.htm"}
+{/if}
+
+
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+
+<!-- start category list -->
+
+{if $full_page}
+<div class="list-div" id="listDiv">
+
+
+<table cellspacing='1' cellpadding='0' id='listTable'>
+  <tr>
+    {foreach from=$fee_arr item=list name=fee_name}
+      {if $smarty.foreach.fee_name.iteration > 1 and ($smarty.foreach.fee_name.iteration-1) % 3 eq 0}
+      </tr><tr>
+      {/if}
+      <td class="first-cell" align="left">
+	  <table width="100%" cellpadding=0 cellspacing=0 border=0>
+	  <tr><td width="50%" align=right style="font-weight:bold;">
+       <span onclick="listTable.edit(this, 'edit_store_name', '{$list.store_id}'); return false;">{$list.shipping_name|escape:"html"}</span>
+	   </td><td width="50%">
+       <span class="link-span">       
+	   <a href="store_manage.php?act=shipping_area_fee_edit&fee_id={$list.fee_id}"  title="{$lang.shipping_area_fee}">编辑</a>&nbsp;&nbsp;
+       <a href="store_manage.php?act=shipping_area_fee_remove&sid={$shipping_region_id}&fee_id={$list.fee_id}" title="{$lang.drop}" onclick=" return confirm('确认要删除吗？')">{$lang.drop}</a>
+       </span>
+	   </td></tr></table>
+      </td>
+      {if $smarty.foreach.fee_name.last}
+       {if $smarty.foreach.fee_name.total % 3 eq 1}
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        {/if}
+        {if $smarty.foreach.fee_name.total % 3 eq 2}
+        <td>&nbsp;</td>
+        {/if}
+       {/if}
+    {/foreach}
+  </tr>
+</table>
+<br><br>
+
+</div>
+{/if}
+
+
+<div class="main-div">
+<form action="store_manage.php" method="post" name="theForm">
+<table cellspacing="1" cellpadding="3" width="100%" class="store_shipping_fee">
+<tr>
+    <td align=right width="30%" ><b>始发地：</b></td>
+    <td>{$store_name}</td>
+  </tr>
+  <tr>
+    <td align=right width="30%" ><b>目的地：</b></td>
+    <td>{$mudidi}</td>
+  </tr>
+  <tr>
+    <td align=right width="30%" ><b>请选择物流：</b></td>
+    <td>
+	<select name="shipping_id">
+	<option value="0">请选择物流</option>
+	{foreach from=$shipping_list item=shipping}
+	<option value="{$shipping.shipping_id}" {if $fee_info.shipping_id eq $shipping.shipping_id}selected=selected{/if} >{$shipping.shipping_name}</option>
+	{/foreach}
+	</select>
+	<a href="javascript:void(0);" onclick="javascript:showDiv()" style="color:#FA8A28">运费模板</a></td>
+  </tr>
+  <tr>
+  <td class="label">费用：</td>
+    <td><input type="text" name="shipping_fee"  maxlength="60" size="20" value="{$fee_info.configure.shipping_fee}" /><span class="require-field">*</span></td>
+   </tr>
+   <tr>
+   <td class="label">免费额度:</td>
+  <td><input type="text" name="free_money"  maxlength="60" size="20" value="{$fee_info.configure.free_money}" /><span class="require-field">*</span></td>
+  </tr>
+  <!-- <tr>
+    <td align=right width="30%" ><b>费用计算方式：</b></td>
+    <td><input type="radio"  {if $fee_info.fee_compute_mode != 'by_number' }checked="true"{/if} onclick="compute_mode('weight')" name="fee_compute_mode" value="by_weight" />按重量计算
+    <input type="radio" {if $fee_info.fee_compute_mode == 'by_number'}checked="true"{/if}  onclick="compute_mode('number')" name="fee_compute_mode" value="by_number" />按商品件数计算</td>
+  </tr>
+
+   <tr id="item_fee" style="display:none">
+    <td class="label">单件商品费用：</td>
+    <td><input type="text" name="item_fee"  maxlength="60" size="20" value="{$fee_info.item_fee}" /><span class="require-field">*</span></td>
+    </tr>
+
+  <tr id="base_fee">
+    <td class="label">1000克以内费用</td>
+    <td><input type="text" name="base_fee"  maxlength="60" size="20" value="{$fee_info.base_fee}" /><span class="require-field">*</span></td>
+  </tr>
+  <tr id="step_fee">
+    <td class="label">续重每1000克或其零数的费用</td>
+   <td><input type="text" name="step_fee"  maxlength="60" size="20" value="{$fee_info.step_fee}" /><span class="require-field">*</span></td>
+  </tr>
+
+  <tr id="free_money">
+  <td class="label">免费额度:</td>
+  <td><input type="text" name="free_money"  maxlength="60" size="20" value="{$fee_info.free_money}" /><span class="require-field">*</span></td>
+  </tr> -->
+
+  <tr>
+    <td align=right width="30%" ></td>
+    <td>
+	<input type="hidden" name="act" value="{$form_action}">
+	<input type="hidden" name="fee_id" value="{$fee_id}">
+	<input type="hidden" name="shipping_region_id" value="{$shipping_region_id}">
+	<input type="submit" class="button" value=" 确定 "> <input type="reset" class="button" value=" 取消 "></td>
+  </tr>
+  </table >
+  </form>
+  </div>
+
+
+
+{literal}
+<script language="JavaScript">
+<!--
+region.isAdmin = true;
+onload = function() {
+  // 开始检查订单
+  startCheckOrder();
+}
+
+
+
+/**
+ * 编辑区域运费
+ */
+function update_fee(fee_id)
+{
+
+}
+
+/**
+ * 新建区域
+ */
+function addRegion()
+{
+	var parent_id = Utils.trim(document.forms['theForm'].elements['parent_id'].value);
+    var province = Utils.trim(document.forms['theForm'].elements['province'].value);
+    var city   = Utils.trim(document.forms['theForm'].elements['city'].value);
+	var district   = Utils.trim(document.forms['theForm'].elements['district'].value);
+	var xiangcun   = Utils.trim(document.forms['theForm'].elements['xiangcun'].value);
+
+    if (province.length == 0 || city.length == 0)
+    {
+        alert('省份或城市不能为空');
+    }
+    else
+    {
+      Ajax.call('store_manage.php?is_ajax=1&act=add_shipping_area',
+        'parent_id=' + parent_id + '&province=' + province+ '&city=' + city+ '&district=' + district+ '&xiangcun=' + xiangcun,
+        listTable.listCallback, 'POST', 'JSON');
+    }
+
+    return false;
+}
+
+function compute_mode(mode)
+{
+    var base_fee  = document.getElementById("base_fee");
+    var step_fee  = document.getElementById("step_fee");
+    var item_fee  = document.getElementById("item_fee");
+ 
+
+    if(mode == 'number')
+    {
+      item_fee.style.display = '';
+      base_fee.style.display = 'none';
+      step_fee.style.display = 'none';
+  
+    }
+    else
+    {
+      item_fee.style.display = 'none';
+      base_fee.style.display = '';
+      step_fee.style.display = '';
+   
+    }
+}
+
+var cmode ='{$fee_info.fee_compute_mode}';
+if (cmode=='by_number')
+{
+	//compute_mode('number');
+}
+else
+{
+	//compute_mode('weight');
+}
+
+//-->
+</script>
+{/literal}
+
+
+{include file="pagefooter.htm"}
+

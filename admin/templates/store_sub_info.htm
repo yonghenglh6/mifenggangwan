@@ -1,0 +1,151 @@
+<!-- $Id: brand_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="../js/region.js"}
+<div class="main-div">
+<form method="post" action="store_manage.php" name="theForm"  onsubmit="return validate()">
+<table cellspacing="1" cellpadding="3" width="100%">
+  <tr>
+    <td class="label">{$lang.sub_name2}{$lang.require_field}</td>
+    <td><input type="text" name="store_name" maxlength="60" value="{$store.store_name}" /></td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.sub_address}{$lang.require_field}</td>
+    <td>
+	<select name="province" id="selProvinces" onchange="region.changed(this, 2, 'selCities')">
+     <option value=''>{$lang.select_please}</option>
+     {foreach from=$provinces item=region}
+      <option value="{$region.region_id}" {if $region.region_id eq $store.province}selected{/if}>{$region.region_name}</option>
+     {/foreach}
+    </select>
+	<select name="city" id="selCities" onchange="region.changed(this, 3, 'selDistricts')">
+    <option value=''>{$lang.select_please}</option>
+     {foreach from=$cities item=region}
+     <option value="{$region.region_id}" {if $region.region_id eq $store.city}selected{/if}>{$region.region_name}</option>
+     {/foreach}
+     </select>
+	 <select name="district" id="selDistricts">
+          <option value="">{$lang.select_please}</option>
+			 {foreach from=$district item=region}
+			<option value="{$region.region_id}" {if $region.region_id eq $store.district}selected{/if}>{$region.region_name}</option>
+			 {/foreach}
+        </select>
+	</td>
+  </tr>
+  <tr>
+    <td class="label">仓库面积{$lang.require_field}</td>
+    <td><input type="text" name="mianji" value="{$store.mianji}">平米</td>
+	</tr>
+
+  <tr>
+    <td class="label">{$lang.sub_fuzeren}{$lang.require_field}</td>
+    <td>
+	{foreach from=$admin_list item=admin key=key}
+	{if $key>0 && $key % 4 ==0}<br>{/if}
+	<input type="checkbox" name="admin_id[]"  {if $admin.checked eq 'checked'}checked=checked{/if} value="{$admin.user_id}" onclick="addAdminTel(this)" > {$admin.user_name}
+	{/foreach}
+	</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.sub_contact}</td>
+    <td valign=top >
+	（前面输入框填写移动电话 ，后面输入框填写固定电话。）
+	<table cellpadding=0 cellspacing=0  width="300" id="tabzhyh">
+	{if $list_adminer}
+	{foreach from= $list_adminer item=adminer_item}
+	<tr id="{$adminer_item.admin_id}"><td>{$adminer_item.admin_name}&nbsp;<input type='hidden' name='adminname_{$adminer_item.admin_id}' value='{$adminer_item.admin_name}' ><input type='text' name='mobile_{$adminer_item.admin_id}' id='mobile_{$adminer_item.admin_id}' value="{$adminer_item.mobile|default:移动电话}">&nbsp;<input type='text' name='tel_{$adminer_item.admin_id}' id='tel_{$adminer_item.admin_id}' value="{$adminer_item.tel|default:固定电话}"></td></tr>
+	{/foreach}
+	{/if}
+	</table>
+	</td>
+  </tr>
+
+  <tr>
+    <td colspan="2" align="center"><br />
+      <input type="submit" class="button" value="{$lang.button_submit}" />
+      <input type="reset" class="button" value="{$lang.button_reset}" onclick="document.getElementById('tabzhyh').innerHTML='';" />
+      <input type="hidden" name="act" value="{$form_action}" />
+      <input type="hidden" name="store_id" value="{$store.store_id}" />
+      <input type="hidden" name="parent_id" value="{$store.parent_id}" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+region.isAdmin = true;
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+	var reg = /^[\d|\-|\s]+$/;
+    validator = new Validator("theForm");
+    validator.required("store_name",  no_subname);
+	validator.required("province",  no_province);
+	validator.required("city",  no_city);
+	validator.required("district",  '没有选择区（县）');
+	validator.required("mianji",  '仓库面积不能为空');
+	var admin_list= document.getElementsByName('admin_id[]');
+	var admin_checked=0;
+	for(var k=0;k<admin_list.length;k++)
+	{
+		if (admin_list[k].checked)
+		{
+			var mobile = document.getElementById('mobile_'+admin_list[k].value);
+			if (!checkMobile(mobile.value)){
+				validator.addErrorMsg('移动电话号格式不正确');
+				mobile.focus();
+			}
+			var tel = document.getElementById('tel_'+admin_list[k].value);
+			if (!reg.test(tel.value) || tel.value.length!=11){
+				validator.addErrorMsg('固定电话格式不正确');
+				tel.focus();
+			}
+			admin_checked++;
+		}		
+	}
+	if(!admin_checked)
+	{
+		validator.addErrorMsg(no_admin);
+	}
+    return validator.passed();
+}
+
+  function addAdminTel(obj)
+  {
+	  var tbl  = document.getElementById('tabzhyh');
+	  if (obj.checked)
+	  {
+		  //alert(obj.value);
+		  //alert(obj.nextSibling.nodeValue);		   
+           var row  = tbl.insertRow();
+		   row.setAttribute("id", obj.value);
+           var cell1 = row.insertCell(-1);
+		   cell1.innerHTML= obj.nextSibling.nodeValue+"&nbsp;<input type='hidden' name='adminname_"+ obj.value +"' value='"+ obj.nextSibling.nodeValue +"' ><input type='text' name='mobile_"+ obj.value +"' id='mobile_"+ obj.value +"' value='移动电话' onfocus=\"if(this.value=='移动电话')this.value='';\">&nbsp;<input type='text' name='tel_"+ obj.value +"' id='tel_"+ obj.value +"' value='固定电话' onfocus=\"if(this.value=='固定电话')this.value='';\">";
+	  }
+	  else
+	  {
+			var ok= tbl.getElementsByTagName("tr");
+			for(var k=0;k<ok.length;k++)
+			{
+                if(ok[k].id==obj.value)
+				{
+					tbl.deleteRow(k);
+					//k=k-1;
+				}
+			}
+	  }
+	  
+  }
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

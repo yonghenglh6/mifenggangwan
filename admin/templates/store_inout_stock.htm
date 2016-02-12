@@ -1,0 +1,187 @@
+<!-- $Id: article_list.htm 16783 2009-11-09 09:59:06Z liuhui $ -->
+
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<script type="text/javascript" src="../js/calendar.php?lang={$cfg_lang}"></script>
+<link href="../js/calendar/calendar.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+ function get_store_sub(obj, pid)
+ {
+	 var store_main=document.getElementById('store_main');
+	 var store_main_list = store_main.getElementsByTagName('a');
+	 for(i=0;i<store_main_list.length;i++)
+	 {
+		store_main_list[i].className='';
+	 }
+	 obj.className='store_curr';
+	//Ajax.call('store_inout_in.php?is_ajax=1&act=search_store_sub', 'parent_id='+pid, get_store_subResponse, 'GET', 'JSON');
+ }
+ function get_store_subResponse(result)
+ {
+	
+ }
+</script>
+<div class="form-div">
+<table cellpadding=1 cellspacing=5 width="100%">
+<tr><td width="80" valign="top">请选择仓库：</td>
+<td id="store_main" align=left >
+<a href="store_inout_stock.php?act=list&sid=0" {if $filter.sid eq '0'}class="store_curr"{/if}>全部</a>
+{foreach from=$store_list item=store}
+<a href="store_inout_stock.php?act=list&sid={$store.store_id}"  {if $filter.sid eq $store.store_id}class="store_curr"{/if} >{$store.store_name}</a>
+{/foreach}
+</td>
+</tr>
+{if $showck}
+<tr><td width="80" valign="top">请选择库房：</td>
+<td id="store_sub">
+<a href="store_inout_stock.php?act=list&sid={$filter.sid}&ssid=0"  {if $filter.ssid eq '0'}class="store_curr"{/if} >全部</a>
+{foreach from=$sub_list item=sub}
+<a href="store_inout_stock.php?act=list&sid={$filter.sid}&ssid={$sub.store_id}" {if $filter.ssid eq $sub.store_id}class="store_curr"{/if} >{$sub.store_name}</a>
+{/foreach}
+</td>
+</tr>
+{/if}
+</table>
+</div>
+
+
+<div class="form-div">
+  <form action="javascript:searchStock()" name="searchForm" >
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />  	
+	商品货号<input type="text" name="goods_sn" id="goods_sn"  size=15 />
+	商品名称<input type="text" name="goods_name" id="goods_name"  />
+    <input type="submit" value="{$lang.button_search}" class="button" />
+  </form>
+</div>
+
+<form method="POST" action="store_inout_stock.php" name="listForm">
+<!-- start cat list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellspacing='1' cellpadding='3' id='list-table'>
+  <tr>
+    <th><input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" />商品ID</th>
+    <th>商品图片</th>
+    <th>商品货号</th>
+    <th width="30%">商品名称</th>
+    <th>仓库</th>
+    <th>属性</th>
+    <th>库存</th>
+  </tr>
+  {foreach from=$stock_list item=list}
+  <tr>
+    <td><input type="checkbox" name="checkboxes[]" value="{$list.goods_id}|{$list.store_id}" />{$list.goods_id}</td>
+    <td style="padding:5px;text-align:center;">
+	{if $list.goods_thumb}<img src="{$list.goods_thumb}" width=40 height=40>{/if}
+	</td>
+    <td align="center"><a href="../goods.php?id={$list.goods_id}" target="_blank">{$list.goods_sn}</a></td>
+    <td style="line-height:18px;"><a href="../goods.php?id={$list.goods_id}" target="_blank">{$list.goods_name}</a></td>
+    <td align="center" style="line-height:18px;">{$list.store_name}</td>
+    <td align="center"style="line-height:18px;">
+	{foreach from=$list.attr_stock item=attr}
+	{$attr.goods_attr_name}<br>
+	{/foreach}
+	</td>
+    <td align="center" style="line-height:18px;">{foreach from=$list.attr_stock item=attr}
+	{$attr.store_number}<br>
+	{/foreach}</td>
+   </tr>
+   {foreachelse}
+    <tr><td class="no-records" colspan="10">{$lang.no_article}</td></tr>
+  {/foreach}
+  <tr>&nbsp;
+    <td align="right" nowrap="true" colspan="8">{include file="page.htm"}</td>
+  </tr>
+</table>
+<input type="hidden" name="act" value="export_goods" />
+{* 代码增加_start   By  morestock_morecity *}
+  <input type="button" value="导出库存商品信息" id="btnSubmit2" name="btnSubmit2" class="button" onclick="export_goods();" />(请尽量按仓库来导出)
+  {* 代码增加_end   By  morestock_morecity *}
+{if $full_page}
+</div>
+
+
+</form>
+<!-- end cat list -->
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+	/**
+   * @param: bool ext 其他条件：用于转移分类
+   */
+  function confirmSubmit(frm, ext)
+  {
+      if (frm.elements['type'].value == 'button_remove')
+      {
+          return confirm(drop_confirm);
+      }
+      else if (frm.elements['type'].value == 'not_on_sale')
+      {
+          return confirm(batch_no_on_sale);
+      }
+      else if (frm.elements['type'].value == 'move_to')
+      {
+          ext = (ext == undefined) ? true : ext;
+          return ext && frm.elements['target_cat'].value != 0;
+      }
+      else if (frm.elements['type'].value == '')
+      {
+          return false;
+      }
+      else
+      {
+          return true;
+      }
+  }
+	 function changeAction()
+  {
+		
+      var frm = document.forms['listForm'];
+
+      // 切换分类列表的显示
+      frm.elements['target_cat'].style.display = frm.elements['type'].value == 'move_to' ? '' : 'none';
+
+      if (!document.getElementById('btnSubmit').disabled &&
+          confirmSubmit(frm, false))
+      {
+          frm.submit();
+      }
+  }
+
+ /* 搜索库存 */
+ function searchStock()
+ {
+    listTable.filter.goods_sn = Utils.trim(document.forms['searchForm'].elements['goods_sn'].value);
+    listTable.filter.goods_name = Utils.trim(document.forms['searchForm'].elements['goods_name'].value);
+    listTable.filter.page = 1;
+    listTable.loadList();
+ }
+
+ /* 代码增加_start   By  morestock_morecity  */
+  function export_goods()
+  {
+        var frm=document.forms['listForm'];
+		 frm.elements['act'].value ="export_goods";
+	    frm.submit();
+  }
+  /* 代码增加_end   By  morestock_morecity  */
+
+
+
+ {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

@@ -1,0 +1,68 @@
+<!-- $Id: wholesale_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+
+
+<form method="post" action="wholesale.php" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+<!-- start wholesale list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+  <table cellpadding="3" cellspacing="1">
+    <tr>
+      <th>{$lang.record_id}</th>
+      <th>{$lang.sub_name}</th>
+      <th>{$lang.address}</th>
+      <th>{$lang.mianji}</th>
+	  <th>{$lang.sub_fuzeren}</th>
+      <th>{$lang.handler}</th>
+    </tr>
+
+    {foreach from=$store_list item=store}
+    <tr>
+	<td align=center>{$store.store_id}</td>
+      <td>{$store.store_name}</td>
+      <td>{$store.province_name|escape:html}{$store.city_name|escape:html}{$store.district_name|escape:html}</td>
+      <td>{$store.mianji}</td>
+      <td style="line-height:18px;">{$store.adminer}</td>
+      <td align="center">
+        <a href="store_manage.php?act=edit_sub&amp;id={$store.store_id}" title="{$lang.edit}"><img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>
+        <a href="store_manage.php?act=sub_remove&id={$store.store_id}&pid={$store.parent_id}" onclick="return confirm('您确认要删除吗？')" title="{$lang.remove}"><img src="images/icon_drop.gif" border="0" height="16" width="16" /></a>      </td>
+    </tr>
+    {foreachelse}
+    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+    {/foreach}
+  </table>
+
+
+
+{if $full_page}
+</div>
+<!-- end wholesale list -->
+</form>
+
+<script type="text/javascript" language="JavaScript">
+<!--
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    document.forms['searchForm'].elements['keyword'].focus();
+
+    startCheckOrder();
+  }
+
+
+  {/literal}
+//-->
+</script>
+
+{include file="pagefooter.htm"}
+{/if}
