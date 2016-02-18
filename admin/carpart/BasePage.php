@@ -30,8 +30,16 @@ class BasePage
             $page = intval($_GET["page"]);
         }
 
+        $wheresql=" ";
+        if (isset($_GET["sfield"])&&isset($_GET["svalue"])) {
+            if($_GET["sfield"]!='请选择列'){
+                $wheresql=" where ".$_GET["sfield"]."='".$_GET["svalue"]."' ";
+            }
+        }
+
+
 //获取总页数
-        $sqlstr = "select * from ".$this->tablename." limit " . (($page - 1) * 50) . ",50";
+        $sqlstr = "select * from ".$this->tablename.$wheresql." limit " . (($page - 1) * 50) . ",50";
 
         $result = mysqli_query($this->sqllink, $sqlstr);
         $data = getRs($result);

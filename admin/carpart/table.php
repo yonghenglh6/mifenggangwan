@@ -103,7 +103,7 @@
 <form method="post" action="" name="listForm" onsubmit="return confirmSubmit(this)">
     <!-- start goods list -->
     <div class="list-div" id="listDiv" >
-
+        <div>
 
         <!-- 分页 -->
         <table id="page-table" cellspacing="0">
@@ -123,7 +123,53 @@
                 </td>
             </tr>
             </tbody></table>
+        </div>
+        <div>
 
+            查询
+            <select id="search_field" name="search_field">
+                <option >请选择列</option>
+                <?php
+                foreach($head as $onehead){
+                    ?>
+                   <option value="<?php echo $onehead['name']?>"><?php echo $onehead['showname']?></option>
+                    <?php
+                }
+                ?>
+            </select>
+            <input id="search_value" type="text" name="search_value" value=""/>
+            <script>
+
+
+                    function removeUrlParam(url,field){
+                        var reg = new RegExp("[\?&]("+field+"=)(.*)(&|$)");
+                        return url.replace(reg,'');
+                    }
+
+                    function replaceUrlParam(url,field,value){
+                        var nurl=removeUrlParam(url,field);
+                        if(nurl.indexOf("?")!=-1){
+                            return nurl+"&"+field+"="+value;
+                        }else{
+                            return nurl+"?"+field+"="+value;
+                        }
+
+                    }
+
+                    function searchfield(){
+                            var sfield=$("#search_field").val();
+                            var svalue=$("#search_value").val();
+
+                            var url=replaceUrlParam(location.href,"sfield",sfield);
+                            url=replaceUrlParam(url,"svalue",svalue);
+                            window.location.href=url;
+                    }
+            </script>
+            <button type="button" onclick="searchfield()">搜索</button>
+
+
+        </div>
+        <div>
         <table cellpadding="3" cellspacing="1" id="tt1"  border="1">
             <tbody><tr>
 
@@ -162,12 +208,12 @@
                 }
                 ?>
 </tbody></table>
-
+        </div>
 
         <script type="text/javascript">
             var cpage=<?php echo $page?>;
             function goToPage(apage){
-                var reg = new RegExp("[?&](page=).*?(&|$)");
+                var reg = new RegExp("[\?&](page=).*(&|$)");
                 var ourl=location.href.replace(reg,'');
                 if(ourl.indexOf("?")!=-1){
                     window.location.href=ourl+"&page="+apage;
@@ -176,6 +222,8 @@
                 }
 
             }
+
+
             function gotoPageFirst(){
                 goToPage(1);
 
@@ -191,7 +239,7 @@
             }
         </script>
 
-
+<div>
             <!-- 分页 -->
             <table id="page-table" cellspacing="0">
                 <tbody><tr>
@@ -210,5 +258,5 @@
                     </td>
                 </tr>
                 </tbody></table>
-
+</div>
 </form>
