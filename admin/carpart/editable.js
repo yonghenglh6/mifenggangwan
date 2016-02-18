@@ -58,7 +58,7 @@
                     return true;
                 var t = $.trim($(td).text());
 				var width=$(td).width();
-				var height=$(td).height();
+				var height=$(td).height()+3;
                 if (opt.editcol != undefined) {
                     $.each(opt.editcol, function (j, obj) {
                         if (obj.colindex == i) {

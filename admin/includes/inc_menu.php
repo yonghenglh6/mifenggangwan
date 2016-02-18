@@ -57,8 +57,20 @@ $modules['02_store_and_goods']['18_store_rebate']       = 'supplier_store_rebate
 /* 代码增加_end  By   morestock_morecity */
 
 /* 代码增加_start  By   DSS */
-$modules['02_dss_chart']['02_dss_kcxz']       = '/dss/index.php?c=originData&a=upload&user_id=' . $_SESSION['admin_id'];
-$modules['02_dss_chart']['02_dss_chart']       = '/dss/index.php?c=originData&a=chart&user_id='  . $_SESSION['admin_id'];
+$_LANG['02_dss_chart'] =  'DSS决策分析';
+
+$_LANG['01_dss_import'] =  '库存数据导入';
+$_LANG['02_dss_kcxzfx']  = '库存现状分析';
+$_LANG['03_dss_kcccfx']  = '库存超储分析';
+$_LANG['04_dss_kcqcfx']  = '库存欠储分析';
+$_LANG['05_dss_pzcssz']  = '配置参数设置';
+/* 代码增加_end  By   DSS */
+/* 代码增加_start  By   DSS */
+$modules['02_dss_chart']['01_dss_import']   = '/dss/index.php?c=originData&a=upload&user_id=' . $_SESSION['admin_id'];
+$modules['02_dss_chart']['02_dss_kcxzfx']  = '/dss/index.php?c=originData&a=chart&user_id='  . $_SESSION['admin_id'];
+$modules['02_dss_chart']['03_dss_kcccfx']  = '/dss/index.php?c=originData&a=index&action=stock&select_name=excessive_stock&user_id='  . $_SESSION['admin_id'];
+$modules['02_dss_chart']['04_dss_kcqcfx']  = '/dss/index.php?c=originData&a=index&action=stock&select_name=out_stock&user_id='  . $_SESSION['admin_id'];
+$modules['02_dss_chart']['05_dss_pzcssz']  = '/dss/index.php?c=originData&a=chart&user_id='  . $_SESSION['admin_id'];
 /* 代码增加_end  By   DSS */
 
 /* 代码增加_start  By   carpart */
@@ -70,11 +82,19 @@ $_LANG['03_carpart_attr'] = '配件属性';
 $_LANG['04_carpart_cartype_relation'] = '配件车型信息';
 $_LANG['05_carpart_homo_relation'] = '配件替代关系';
 
-$modules['03_carpart']['01_carpart']       = '/carpart/carpart.php';
-$modules['03_carpart']['02_cartype']       = '/carpart/cartype.php';
-$modules['03_carpart']['03_carpart_attr']       = '/carpart/carpart_attr.php';
-$modules['03_carpart']['04_carpart_cartype_relation']       = '/carpart/carpart_cartype_relation.php';
-$modules['03_carpart']['05_carpart_homo_relation']       = '/carpart/carpart_homo_relation.php';
+$modules['03_carpart']['01_carpart']       = '/admin/carpart/carpart.php';
+$modules['03_carpart']['02_cartype']       = '/admin/carpart/cartype.php';
+$modules['03_carpart']['03_carpart_attr']       = '/admin/carpart/carpart_attr.php';
+$modules['03_carpart']['04_carpart_cartype_relation']       = '/admin/carpart/carpart_cartype_relation.php';
+$modules['03_carpart']['05_carpart_homo_relation']       = '/admin/carpart/carpart_homo_relation.php';
+
+/* 代码增加_end  By   carpart */
+
+$modules['03_carpart']['01_carpart']       = '/admin/carpart/carpart.php';
+$modules['03_carpart']['02_cartype']       = '/admin/carpart/cartype.php';
+$modules['03_carpart']['03_carpart_attr']       = '/admin/carpart/carpart_attr.php';
+$modules['03_carpart']['04_carpart_cartype_relation']       = '/admin/carpart/carpart_cartype_relation.php';
+$modules['03_carpart']['05_carpart_homo_relation']       = '/admin/carpart/carpart_homo_relation.php';
 
 /* 代码增加_end  By   carpart */
 

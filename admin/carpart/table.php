@@ -2,7 +2,8 @@
 <script type="text/javascript" src="jquery-1.12.0.min.js" ></script>
 <script type="text/javascript" src="editable.js" ></script>
 <link href="general.css" rel="stylesheet" type="text/css"/>
-
+<link href="../styles/general.css" rel="stylesheet" type="text/css">
+<link href="../styles/main.css" rel="stylesheet" type="text/css">
 
 <?php
 
@@ -100,9 +101,8 @@
 
 
 
-<form method="post" action="" name="listForm" onsubmit="return confirmSubmit(this)">
     <!-- start goods list -->
-    <div class="list-div" id="listDiv" >
+    <div>
         <div>
 
         <!-- 分页 -->
@@ -169,8 +169,10 @@
 
 
         </div>
-        <div>
-        <table cellpadding="3" cellspacing="1" id="tt1"  border="1">
+		
+<form method="post" action="" name="listForm" onsubmit="return confirmSubmit(this)">
+        <div class="list-div" id="listDiv" >
+        <table cellpadding="3" cellspacing="1" id="tt1">
             <tbody><tr>
 
 
@@ -209,7 +211,7 @@
                 ?>
 </tbody></table>
         </div>
-
+</form>
         <script type="text/javascript">
             var cpage=<?php echo $page?>;
             function goToPage(apage){
@@ -259,4 +261,5 @@
                 </tr>
                 </tbody></table>
 </div>
-</form>
+
+</div>
