@@ -7,16 +7,14 @@
  */
 
 
-require '../data/config.php';
-
-
 function getSql()
 {
-    global $db_host2;
-    global $db_name;
-    global $db_user;
-    global $db_pass;
-    $mysql_server_name = $db_host2; //数据库服务器名称
+
+    require_once '../../data/config.php';
+
+
+
+    $mysql_server_name = $db_host; //数据库服务器名称
     $mysql_username = $db_user; // 连接数据库用户名
     $mysql_password = $db_pass; // 连接数据库密码
     $mysql_database = $db_name; // 数据库的名字

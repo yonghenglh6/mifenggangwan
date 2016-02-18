@@ -41,7 +41,7 @@
         $trs = $(trs);
         if ($trs.size() == 0 || (opt.head && $trs.size() == 1))
             return false;
-        var button = "<td><a href='#' class='" + opt.editcss + "'>编辑</a> <a href='#' class='" + opt.delcss + "'>删除</a><a href='#' class='" + opt.onokcss + "'>确定</a> <a href='#' class='" + opt.canclcss + "'>取消</a></td>";
+        var button = "<td noWrap=\"noWrap\"><a href='#' class='" + opt.editcss + "'>编辑</a> <a href='#' class='" + opt.delcss + "'>删除</a><a href='#' class='" + opt.onokcss + "'>确定</a> <a href='#' class='" + opt.canclcss + "'>取消</a></td>";
         $trs.each(function (i, tr) {
             if (opt.head && i == 0) {
                 $(tr).append("<td></td>");
@@ -57,10 +57,13 @@
                 if ($.inArray(i, opt.noeditcol) != -1)
                     return true;
                 var t = $.trim($(td).text());
+				var width=$(td).width();
+				var height=$(td).height();
                 if (opt.editcol != undefined) {
                     $.each(opt.editcol, function (j, obj) {
                         if (obj.colindex == i) {
-                            css = obj.css ? "class='" + obj.css + "'" : "";
+							
+                            css = obj.css ? "class='" + obj.css + "'" : " style=\"width:"+width+";height:"+height+";\"";
                             if (obj.edittype == undefined || obj.edittype == 0) {
                                 $(td).data("v", t);
                                 $(td).html("<input type='text' value='" + t + "' " + css + " />");

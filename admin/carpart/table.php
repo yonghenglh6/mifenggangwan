@@ -32,7 +32,7 @@
             }
             /* 可以在此处扩展input、select以外的元素确认行为 */
         });
-        alert(data);
+
 //        alert("<?php //echo $edit_url?>//"+data);
         $.ajax({
             type: "post",
@@ -42,6 +42,7 @@
                 alert(result);
             },
             error:function (result) {
+
                 alert("修改失败。");
                 location.reload();
             }
@@ -101,7 +102,7 @@
 
 <form method="post" action="" name="listForm" onsubmit="return confirmSubmit(this)">
     <!-- start goods list -->
-    <div class="list-div" id="listDiv">
+    <div class="list-div" id="listDiv" >
 
 
         <!-- 分页 -->
@@ -111,7 +112,7 @@
                     <!-- $Id: page.htm 14216 2008-03-10 02:27:21Z testyang $ -->
                     <div id="turn-page">
                         当前第 <span id="pageCurrent"><?php echo $page;?></span>
-                        页，每页 1000个
+                        页，每页 50个
         <span id="page-link">
 
 
@@ -149,7 +150,7 @@
                 for($i=0;$i<$columnNum;$i=$i+1){
 
                     ?>
-                    <td name="<?php echo $head[$i]['name'] ?>" style="background-color: rgb(255, 255, 255);"><?php echo $onerow[$i] ?></td>
+                    <td  name="<?php echo $head[$i]['name'] ?>" style="background-color: rgb(255, 255, 255);"><?php echo $onerow[$i] ?></td>
 
                     <?php
                 }
@@ -198,7 +199,7 @@
                         <!-- $Id: page.htm 14216 2008-03-10 02:27:21Z testyang $ -->
                         <div id="turn-page">
                             当前第 <span id="pageCurrent"><?php echo $page;?></span>
-                            页，每页 1000个
+                            页，每页 50个
         <span id="page-link">
 
 
