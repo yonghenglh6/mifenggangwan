@@ -20,6 +20,7 @@ class CarpartCartypeRelation extends BasePage{
         );
         $this->edit_url = "carpart_cartype_relation.php?action=edit";
         $this->del_url =  "carpart_cartype_relation.php?action=del";
+        $this->add_url =  "carpart_cartype_relation.php?action=add";
     }
 
     function operateEdit(){

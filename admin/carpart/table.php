@@ -40,6 +40,7 @@
             url: url,
             data:data,
             success: function (result) {
+//                alert("修改成功。");
                 alert(result);
             },
             error:function (result) {
@@ -124,6 +125,39 @@
             </tr>
             </tbody></table>
         </div>
+
+
+        <div class="newitem">
+            <script>
+                function createNew(){
+                    $("#createNewTr").show();
+                    $("#createbutton").hide();
+                    $("#savecreatebutton").show();
+                    $("#cancelcreatebutton").show();
+                }
+                function saveNew(){
+                    $("#createNewTr").hide();
+                    $("#createbutton").show();
+                    $("#savecreatebutton").hide();
+                    $("#cancelcreatebutton").hide();
+                    changeRow($("#createNewTr"),"<?php echo $add_url?>");
+                }
+                function cancelNew(){
+                    $("#createNewTr").hide();
+                    $("#createbutton").show();
+                    $("#savecreatebutton").hide();
+                    $("#cancelcreatebutton").hide();
+                }
+            </script>
+            <button id="createbutton" onclick="createNew()">新建</button>
+            <button id="savecreatebutton" onclick="saveNew()" style="display: none">保存</button>
+            <button id="cancelcreatebutton" onclick="cancelNew()" style="display: none" >取消</button>
+        </div>
+
+
+
+
+
         <div>
 
             查询
@@ -172,6 +206,47 @@
 		
 <form method="post" action="" name="listForm" onsubmit="return confirmSubmit(this)">
         <div class="list-div" id="listDiv" >
+
+
+
+            <table cellpadding="3" cellspacing="1" id="createNewTr" style="display: none">
+                <tbody>
+            <tr>
+
+
+                <?php
+                foreach($head as $onehead){
+                if($onehead['editable']==1) {
+                    ?>
+                    <th><a href="javascript:listTable.sort('goods_sn');"><?php echo $onehead['showname']; ?></a></th>
+
+                    <?php
+                }
+                }
+                ?>
+            </tr>
+            <tr >
+                <?php
+                for($i=0;$i<$columnNum;$i=$i+1){
+                    if($head[$i]['editable']==1){
+                        ?>
+                        <td  name="<?php echo $head[$i]['name'] ?>" style="background-color: rgb(255, 255, 255);">
+                            <input type="text" name="<?php echo $head[$i]['name'] ?>" value=""/>
+                        </td>
+
+                        <?php
+                    }else{
+                        ?>
+
+                        <?php
+                    }
+                }
+                ?>
+
+            </tr>
+            </tbody>
+                </table>
+
         <table cellpadding="3" cellspacing="1" id="tt1">
             <tbody><tr>
 
@@ -185,7 +260,6 @@
                 }
                 ?>
             </tr>
-
 
                 <?php
                 foreach($content as $onerow){

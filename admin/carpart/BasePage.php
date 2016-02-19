@@ -16,12 +16,16 @@ class BasePage
 
     public $edit_url;
     public $del_url;
+    public $add_url;
 
+    public $aikey;
     function init(){
 
         $this->edit_url = $this->tablename.".php?action=edit";
         $this->del_url =  $this->tablename.".php?action=del";
+        $this->add_url = $this->tablename.".php?action=add";
         $this->id_field="oe";
+        $this->aikey="";
     }
 
     function showPage(){
@@ -58,6 +62,8 @@ class BasePage
         $head=$this->head;
         $edit_url=$this->edit_url;
         $del_url=$this->del_url;
+        $add_url=$this->add_url;
+
         include("table.php");
     }
 
@@ -69,9 +75,11 @@ class BasePage
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($_GET['action'] == 'add') {
                 //添加
+
                 return $this->operateAdd();
             } else if ($_GET['action'] == 'edit') {
                 //修改
+
                 return $this->operateEdit();
 
             } else if ($_GET['action'] == 'del') {
@@ -79,6 +87,7 @@ class BasePage
 
                 return $this->operateDelete();
             }
+
             return;
         }
 
@@ -122,7 +131,32 @@ class BasePage
         }
     }
     function operateAdd(){
-        echo "添加成功";
+
+        $sqlstr = "insert into ".$this->tablename." ";
+        $keylist="";
+        $valuelist="";
+        $begin=true;;
+        foreach($_POST as $key => $value){
+            if($key!=$this->aikey){
+            if($begin){
+                $begin=false;
+                $keylist=$keylist."`".$key."`";
+                $valuelist=$valuelist."'".$value."'";
+                //$sqlstr=$sqlstr."".$key."='".$value."'";
+            }else{
+                $keylist=$keylist.",`".$key."`";
+                $valuelist=$valuelist.",'".$value."'";
+                //$sqlstr=$sqlstr.",".$key."='".$value."'";
+            }}
+        }
+        $sqlstr.=" (".$keylist.") values (".$valuelist.")";
+        $result = mysqli_query($this->sqllink, $sqlstr);
+        if(FALSE == $result)
+        {
+            echo "添加失败";
+        }else{
+            echo "修改成功";
+        }
     }
     function operateDelete(){
         $sqlstr = "delete from ".$this->tablename." where ".$this->id_field." = '".$_POST[$this->id_field]."'";

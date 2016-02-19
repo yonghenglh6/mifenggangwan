@@ -11,6 +11,7 @@
 require('BasePage.php');
 class CarpartHomoRelation extends BasePage{
     function init(){
+
         parent::init();
         $this->tablename="carpart_homo_realation";
         $this->id_field="oe1,oe2";
@@ -21,7 +22,7 @@ class CarpartHomoRelation extends BasePage{
         );
         $this->edit_url = "carpart_homo_relation.php?action=edit";
         $this->del_url =  "carpart_homo_relation.php?action=del";
-
+        $this->add_url =  "carpart_homo_relation.php?action=add";
     }
 
     function operateEdit(){

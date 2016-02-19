@@ -11,6 +11,7 @@
 require('BasePage.php');
 class Carpart extends BasePage{
     function init(){
+        parent::init();
         $this->tablename="carpart";
         $this->id_field="id";
         $this->head = array(array('name' => 'id', 'editable' => 0, 'display' => 1, 'showname' => 'ID', 'type' => ''),
@@ -29,6 +30,9 @@ class Carpart extends BasePage{
 
         $this->edit_url = "carpart.php?action=edit";
         $this->del_url =  "carpart.php?action=del";
+        $this->add_url =  "carpart.php?action=add";
+
+        $this->aikey = "id";
     }
     function showPage(){
         return parent::showPage();

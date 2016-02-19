@@ -48,7 +48,7 @@ class Cartype extends BasePage{
         );
         $this->edit_url = "cartype.php?action=edit";
         $this->del_url =  "cartype.php?action=del";
-
+        $this->add_url =  "cartype.php?action=add";
     }
 
 }

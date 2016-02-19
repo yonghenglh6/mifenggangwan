@@ -27,7 +27,7 @@ class CarpartAttr extends BasePage{
         );
         $this->edit_url = "carpart_attr.php?action=edit";
         $this->del_url =  "carpart_attr.php?action=del";
-
+        $this->add_url =  "carpart_attr.php?action=add";
 
     }
     function showPage(){
