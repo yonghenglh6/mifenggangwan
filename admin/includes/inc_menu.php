@@ -82,19 +82,11 @@ $_LANG['03_carpart_attr'] = '配件属性';
 $_LANG['04_carpart_cartype_relation'] = '配件车型信息';
 $_LANG['05_carpart_homo_relation'] = '配件替代关系';
 
-$modules['03_carpart']['01_carpart']       = '/admin/carpart/carpart.php';
-$modules['03_carpart']['02_cartype']       = '/admin/carpart/cartype.php';
-$modules['03_carpart']['03_carpart_attr']       = '/admin/carpart/carpart_attr.php';
-$modules['03_carpart']['04_carpart_cartype_relation']       = '/admin/carpart/carpart_cartype_relation.php';
-$modules['03_carpart']['05_carpart_homo_relation']       = '/admin/carpart/carpart_homo_relation.php';
-
-/* 代码增加_end  By   carpart */
-
-$modules['03_carpart']['01_carpart']       = '/admin/carpart/carpart.php';
-$modules['03_carpart']['02_cartype']       = '/admin/carpart/cartype.php';
-$modules['03_carpart']['03_carpart_attr']       = '/admin/carpart/carpart_attr.php';
-$modules['03_carpart']['04_carpart_cartype_relation']       = '/admin/carpart/carpart_cartype_relation.php';
-$modules['03_carpart']['05_carpart_homo_relation']       = '/admin/carpart/carpart_homo_relation.php';
+$modules['03_carpart']['01_carpart']       = '/carpart/carpart.php';
+$modules['03_carpart']['02_cartype']       = '/carpart/cartype.php';
+$modules['03_carpart']['03_carpart_attr']       = '/carpart/carpart_attr.php';
+$modules['03_carpart']['04_carpart_cartype_relation']       = '/carpart/carpart_cartype_relation.php';
+$modules['03_carpart']['05_carpart_homo_relation']       = '/carpart/carpart_homo_relation.php';
 
 /* 代码增加_end  By   carpart */
 

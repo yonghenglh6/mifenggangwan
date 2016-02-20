@@ -104,27 +104,6 @@
 
     <!-- start goods list -->
     <div>
-        <div>
-
-        <!-- 分页 -->
-        <table id="page-table" cellspacing="0">
-            <tbody><tr>
-                <td align="right" nowrap="true">
-                    <!-- $Id: page.htm 14216 2008-03-10 02:27:21Z testyang $ -->
-                    <div id="turn-page">
-                        当前第 <span id="pageCurrent"><?php echo $page;?></span>
-                        页，每页 50个
-        <span id="page-link">
-
-
-          <a href="javascript:gotoPageFirst()">第一页</a>
-          <a href="javascript:gotoPagePrev()">上一页</a>
-          <a href="javascript:gotoPageNext()">下一页</a>
-                    </div>
-                </td>
-            </tr>
-            </tbody></table>
-        </div>
 
 
         <div class="newitem">
@@ -149,9 +128,12 @@
                     $("#cancelcreatebutton").hide();
                 }
             </script>
-            <button id="createbutton" onclick="createNew()">新建</button>
-            <button id="savecreatebutton" onclick="saveNew()" style="display: none">保存</button>
-            <button id="cancelcreatebutton" onclick="cancelNew()" style="display: none" >取消</button>
+			<h1>
+			<span class="action-span" id="createbutton"><a href="#"  onclick="createNew()">新建</a></span>
+			<span class="action-span" id="savecreatebutton" style="display: none"><a href="#"  onclick="saveNew()" >保存</a></span>
+			<span class="action-span" id="cancelcreatebutton"  style="display: none" ><a href="#"  onclick="cancelNew()">取消</a></span>
+			</h1>
+
         </div>
 
 
@@ -208,8 +190,8 @@
         <div class="list-div" id="listDiv" >
 
 
-
-            <table cellpadding="3" cellspacing="1" id="createNewTr" style="display: none">
+			<div>
+            <table cellpadding="3" cellspacing="1" id="createNewTr" border="8" bordercolor="#ffc979" style="display: none">
                 <tbody>
             <tr>
 
@@ -246,7 +228,8 @@
             </tr>
             </tbody>
                 </table>
-
+		</div>
+		<div>
         <table cellpadding="3" cellspacing="1" id="tt1">
             <tbody><tr>
 
@@ -272,7 +255,7 @@
                 for($i=0;$i<$columnNum;$i=$i+1){
 
                     ?>
-                    <td  name="<?php echo $head[$i]['name'] ?>" style="background-color: rgb(255, 255, 255);"><?php echo $onerow[$i] ?></td>
+                    <td  name="<?php echo $head[$i]['name'] ?>" style="background-color: rgb(255, 255, 255);min-width:50px"><?php echo $onerow[$i] ?></td>
 
                     <?php
                 }
@@ -283,7 +266,7 @@
                     <?php
                 }
                 ?>
-</tbody></table>
+</tbody></table></div>
         </div>
 </form>
         <script type="text/javascript">

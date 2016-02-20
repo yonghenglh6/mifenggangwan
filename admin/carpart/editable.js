@@ -58,12 +58,13 @@
                     return true;
                 var t = $.trim($(td).text());
 				var width=$(td).width();
-				var height=$(td).height()+3;
+				var height=$(td).height();
                 if (opt.editcol != undefined) {
                     $.each(opt.editcol, function (j, obj) {
                         if (obj.colindex == i) {
 							
-                            css = obj.css ? "class='" + obj.css + "'" : " style=\"width:"+width+";height:"+height+";\"";
+                           // css = obj.css ? "class='" + obj.css + "'" : " style=\"width:"+width+";height:"+height+";\"";
+						   css = obj.css ? "class='" + obj.css + "'" : " style=\"\"";
                             if (obj.edittype == undefined || obj.edittype == 0) {
                                 $(td).data("v", t);
                                 $(td).html("<input type='text' value='" + t + "' " + css + " />");
