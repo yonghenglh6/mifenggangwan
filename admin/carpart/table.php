@@ -236,10 +236,12 @@
 
                 <?php
                 foreach($head as $onehead){
+					if($onehead['display']==1){
                     ?>
                     <th><a href="javascript:listTable.sort('goods_sn');"><?php echo $onehead['showname'] ;?></a></th>
 
                     <?php
+					}
                 }
                 ?>
             </tr>
@@ -253,11 +255,12 @@
 
 
                 for($i=0;$i<$columnNum;$i=$i+1){
-
+if($head[$i]['display']==1){
                     ?>
                     <td  name="<?php echo $head[$i]['name'] ?>" style="background-color: rgb(255, 255, 255);min-width:50px"><?php echo $onerow[$i] ?></td>
 
                     <?php
+}
                 }
                 ?>
 

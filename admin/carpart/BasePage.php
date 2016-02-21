@@ -43,6 +43,10 @@ class BasePage
 
 
 //获取总页数
+
+
+
+
         $sqlstr = "select * from ".$this->tablename.$wheresql." limit " . (($page - 1) * 50) . ",50";
 
         $result = mysqli_query($this->sqllink, $sqlstr);
@@ -50,10 +54,11 @@ class BasePage
         $content = array();
         foreach ($data as $orow) {
             $nrow = $orow;
+			
 //    $nrow[7] = $orow[7] == '1' ? '是' : '否';
 //    $nrow[8] = $orow[8] == '1' ? '是' : '否';
 //    $nrow[9] = $orow[9] == '1' ? '是' : '否';
-
+			$nrow=$this->outFilter($nrow);
             $content[] = $nrow;
         }
         $columnNum = count($this->head);
@@ -73,6 +78,7 @@ class BasePage
         $this->sqllink = getSql();
 
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
+			$this->inFilter();
             if ($_GET['action'] == 'add') {
                 //添加
 
@@ -101,12 +107,12 @@ class BasePage
 
     }
 
-    function filterData(){
-
+    function outFilter($data){
+		return $data;
     }
 
-    function mapData(){
-
+    function inFilter(){
+		
     }
 
     function operateEdit(){
